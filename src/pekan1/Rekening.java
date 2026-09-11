@@ -11,9 +11,11 @@ public class Rekening {
 	NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 	
 	public Rekening(String nomor, String nama, double saldoAwal) {
+		
 		nomorRekening = nomor;
 		namaPemilik = nama;
 		saldo = saldoAwal;
+		
 		if(saldoAwal < 50000) {
 			System.out.println("Saldo awal harus > Rp.50.000,00");
 		}
@@ -36,8 +38,8 @@ public class Rekening {
 	
 	public void tarikTunai(double nominal) {
 		
-		if(nominal < 10000) {
-			System.out.println("Gagal: minimal nominal penarikan Rp.10.000,00");
+		if(nominal > saldo) {
+			System.out.println("Gagal: Saldo tidak mencukupi!");
 		}
 		else if(nominal > (saldo-10000)) {
 			System.out.println("Gagal:saldo anda " + formatRupiah.format(saldo)+ " minimal sisa saldo Rp.10.000,00");
@@ -47,7 +49,7 @@ public class Rekening {
 			System.out.println("Tarik tunai " + formatRupiah.format(nominal) + " berhasil. Saldo saat ini: " + formatRupiah.format(saldo) );
 		}
 		else {
-			System.out.println("Gagal: Saldo tidak mencukupi!");
+			System.out.println("Gagal: Minimal penarikan Rp10.000,00!");
 		}
 	}
 	
