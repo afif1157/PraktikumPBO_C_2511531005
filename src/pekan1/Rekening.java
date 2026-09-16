@@ -1,6 +1,7 @@
 package pekan1;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.ArrayList;
  
 public class Rekening {
 
@@ -9,11 +10,15 @@ public class Rekening {
 	double saldo;
 	
 	NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-	
+	ArrayList<Transaksi> riwayatTransaksi;
+ 	
 	public Rekening(String nomor, String nama, double saldoAwal) {
 		nomorRekening = nomor;
 		namaPemilik = nama;
 		saldo = saldoAwal;
+		
+		this.riwayatTransaksi = new ArrayList<>();
+		
 		if(saldoAwal < 50000) {
 			System.out.println("Saldo awal harus > Rp.50.000,00");
 		}
@@ -24,9 +29,15 @@ public class Rekening {
 	}  
 	
 	public void setorTunai(double nominal) {
-		
-		if (nominal >= 10000) {
+		if(nominal > 500000) {
+			System.out.println("maksimal nominal setor Rp.500.000");
+		}
+		else if (nominal >= 10000) {
 			saldo += nominal;  	
+			String idTrx = "TRX-S-" + System.currentTimeMillis();
+			Transaksi trxBaru = new Transaksi(idTrx, "Kredit", nominal);
+			riwayatTransaksi.add(trxBaru);
+			
 			System.out.println("Setor tunai " + formatRupiah.format(nominal) + " berhasil. Saldo saat ini: " + formatRupiah.format(saldo) );
 			
 		}else {
@@ -44,6 +55,10 @@ public class Rekening {
 		}
 		else if(nominal >= 10000) {   
 			saldo -= nominal;
+			String idTrx = "TRX-T-" + System.currentTimeMillis();
+			Transaksi trxBaru = new Transaksi(idTrx, "Debit", nominal);
+			riwayatTransaksi.add(trxBaru);
+			
 			System.out.println("Tarik tunai " + formatRupiah.format(nominal) + " berhasil. Saldo saat ini: " + formatRupiah.format(saldo) );
 		}
 		else {
@@ -51,7 +66,7 @@ public class Rekening {
 		}
 	}
 	
-	public void cekInformasi() {
+	public void cekInformasi() { 
 		System.out.println("--- INFO REKENING ---");
 		System.out.println("No. Rekening : " + nomorRekening);
 		System.out.println("Nama Pemilik : " + namaPemilik);
@@ -59,6 +74,16 @@ public class Rekening {
 		System.out.println("-----------------------");   
 	}
 	
+	public void cetakMutasi() {
+		for(Transaksi t : riwayatTransaksi) {
+			if(riwayatTransaksi.isEmpty()) {
+				System.out.println("Belum ada transaksi pada rekening ini!");
+			}else {
+				t.cetakDetail();
+			}
+			
+		}
+	}	
 }
 
 

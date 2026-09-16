@@ -1,5 +1,5 @@
 package pekan1;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Main{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
+		ArrayList<Rekening> daftarRekening = new ArrayList<>();
 		Rekening akunAktif = null;
 		boolean isRunning = true;
 		
@@ -18,6 +19,8 @@ public class Main{
 			System.out.println("2. Setor Tunai");
 			System.out.println("3. Tarik Tunai");
 			System.out.println("4. Cek Informasi Rekening");
+			System.out.println("5. Ganti Akun");
+			System.out.println("6. Cetak Mutasi");
 			System.out.println("0. Keluar");
 			System.out.print("Pilih menu: ");
 			
@@ -34,7 +37,9 @@ public class Main{
 					System.out.print("Masukkan Saldo Awal: ");
 					double saldo = bacaDouble(input, "");
 					
-					akunAktif = new Rekening(no, nama, saldo);
+					Rekening rekeningBaru = new Rekening(no, nama, saldo);
+					daftarRekening.add(rekeningBaru);
+					akunAktif = rekeningBaru;
 					break;
 					
 				case 2:
@@ -62,6 +67,40 @@ public class Main{
 						System.out.println("Error: Anda belum membuka rekening!");
 					}else {
 						akunAktif.cekInformasi();
+					}
+					break;
+				
+				case 5:
+					if(daftarRekening.isEmpty()) {
+						System.out.println("Error: Belum ada rekening yang terdaftar!");
+					}
+					else {
+						System.out.println("Masukkan No Rekening yang ingin diaktifkan: ");
+						String cariNomor = input.nextLine();
+						
+						Rekening ditemukan = null;
+						for(Rekening r : daftarRekening) {
+							if(r.nomorRekening.equals(cariNomor)) {
+								ditemukan = r;
+								break;
+							}
+						}
+						
+						if(ditemukan != null) {
+							akunAktif = ditemukan;
+							System.out.println("Berhasil beralih ke Rekening atas nama " + akunAktif.namaPemilik);
+						}
+						else {
+							System.out.println("Error : Nomor rekening tidak ditemukan!");
+						}
+					}
+					break;
+					
+				case 6:
+					if(akunAktif == null) {
+						System.out.println("Error: Anda belum membuka rekening!");
+					}else {
+						akunAktif.cetakMutasi();
 					}
 					break;
 					
