@@ -5,17 +5,30 @@ import java.util.ArrayList;
  
 public class Rekening {
 
-	String nomorRekening;
-	String namaPemilik;
-	double saldo;
+	private String nomorRekening;
+	private String namaPemilik;
+	private double saldo;
+	private String pin;
+	private int percobaanGagal;
+	private boolean isBlocked;
 	
 	NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 	ArrayList<Transaksi> riwayatTransaksi;
  	
-	public Rekening(String nomor, String nama, double saldoAwal) {
-		nomorRekening = nomor;
-		namaPemilik = nama;
-		saldo = saldoAwal;
+	public Rekening(String nomor, String nama, double saldoAwal, String pinAwal) {
+		this.nomorRekening = nomor;
+		this.namaPemilik = nama;
+		this.saldo = saldoAwal;
+		
+		if(pinAwal.length() == 6) {
+			this.pin = pinAwal;
+		}else {
+			System.out.println("Peringatan: PIN harus 6 digit! menggunakan PIN default 123456");
+			this.pin = "123456";
+		}
+		
+		this.percobaanGagal = 0;
+		this.isBlocked = false;
 		
 		this.riwayatTransaksi = new ArrayList<>();
 		
@@ -27,6 +40,38 @@ public class Rekening {
 		}
 		
 	}  
+	
+	public String getNomorRekening() {
+		return nomorRekening;
+	}
+	public String getNamaPemilik() {
+		return namaPemilik;
+	}
+	public boolean isBlocked() {
+		return isBlocked;
+	}
+	
+	public boolean otentikasi(String inputPin) {
+		if(isBlocked) {	
+			System.out.println("Akun terblokir: silakan hubungi admin untuk membuka blokir!");
+			return false;
+		}
+		if(this.pin.equals(inputPin)) {
+			percobaanGagal = 0;
+			return true;
+		}else {
+			percobaanGagal++;
+			int sisaPercobaan = 3 - percobaanGagal;
+			
+			if(percobaanGagal >= 3) {
+				isBlocked = true;
+				System.out.println("Akun terblokir karena 3 kali salah pin!");
+			}else {
+				System.out.println("PIN salah! sisa percobaan "+ sisaPercobaan);
+			}
+			return false;
+		}
+	}
 	
 	public void setorTunai(double nominal) {
 		if(nominal > 500000) {

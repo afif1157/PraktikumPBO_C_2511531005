@@ -36,8 +36,10 @@ public class Main{
 					String nama = input.nextLine();
 					System.out.print("Masukkan Saldo Awal: ");
 					double saldo = bacaDouble(input, "");
+					System.out.println("Masukkkan PIN: ");
+					String pin = input.nextLine();
 					
-					Rekening rekeningBaru = new Rekening(no, nama, saldo);
+					Rekening rekeningBaru = new Rekening(no, nama, saldo, pin);
 					daftarRekening.add(rekeningBaru);
 					akunAktif = rekeningBaru;
 					break;
@@ -53,12 +55,22 @@ public class Main{
 					break;
 					
 				case 3:
+					if(akunAktif.isBlocked()) {
+						System.out.println("Akses ditolak: akun anda sedang terblokir!");
+						break;
+					}
 					if(akunAktif == null) {
 						System.out.println("Eror: Mohon maaf, Anda belum memiliki nomor rekening!");
 					}else {
-						System.out.println("Masukkan nominal tarik: ");
-						double tarik = bacaDouble(input, "Masukkan nominal: ");
-						akunAktif.tarikTunai(tarik);
+						System.out.println("Masukkan PIN: ");
+						String pinInput = input.nextLine();
+						if(akunAktif.otentikasi(pinInput)) {
+							System.out.println("Masukkan nominal tarik: ");
+							double tarik = bacaDouble(input, "Masukkan nominal: ");
+							akunAktif.tarikTunai(tarik);
+						}else {
+							System.out.println("Akses ditolak: PIN yang anda masukkan salah!");
+						}
 					}
 					break;
 					
@@ -80,7 +92,7 @@ public class Main{
 						
 						Rekening ditemukan = null;
 						for(Rekening r : daftarRekening) {
-							if(r.nomorRekening.equals(cariNomor)) {
+							if(r.getNomorRekening().equals(cariNomor)) {
 								ditemukan = r;
 								break;
 							}
@@ -88,7 +100,7 @@ public class Main{
 						
 						if(ditemukan != null) {
 							akunAktif = ditemukan;
-							System.out.println("Berhasil beralih ke Rekening atas nama " + akunAktif.namaPemilik);
+							System.out.println("Berhasil beralih ke Rekening atas nama " + akunAktif.getNamaPemilik());
 						}
 						else {
 							System.out.println("Error : Nomor rekening tidak ditemukan!");
@@ -100,7 +112,15 @@ public class Main{
 					if(akunAktif == null) {
 						System.out.println("Error: Anda belum membuka rekening!");
 					}else {
-						akunAktif.cetakMutasi();
+						System.out.println("Masukkan PIN: ");
+						String pinInput = input.nextLine();
+						if(akunAktif.otentikasi(pinInput)) {
+							akunAktif.cetakMutasi();
+						}else {
+							System.out.println("Akses ditolak: PIN yang anda masukkan salah!");
+						}
+						
+						
 					}
 					break;
 					
