@@ -7,13 +7,13 @@ public class Rekening {
 
 	private String nomorRekening;
 	private String namaPemilik;
-	private double saldo;
+	protected double saldo;
 	private String pin;
 	private int percobaanGagal;
 	private boolean isBlocked;
 	
 	NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-	ArrayList<Transaksi> riwayatTransaksi;
+	protected ArrayList<Transaksi> riwayatTransaksi;
  	
 	public Rekening(String nomor, String nama, double saldoAwal, String pinAwal) {
 		this.nomorRekening = nomor;
@@ -120,13 +120,12 @@ public class Rekening {
 	}
 	
 	public void cetakMutasi() {
+		if(riwayatTransaksi.isEmpty()) {
+			System.out.println("Belum ada transaksi pada rekening ini!");
+			return;
+		}
 		for(Transaksi t : riwayatTransaksi) {
-			if(riwayatTransaksi.isEmpty()) {
-				System.out.println("Belum ada transaksi pada rekening ini!");
-			}else {
 				t.cetakDetail();
-			}
-			
 		}
 	}	
 }

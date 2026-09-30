@@ -21,6 +21,7 @@ public class Main{
 			System.out.println("4. Cek Informasi Rekening");
 			System.out.println("5. Ganti Akun");
 			System.out.println("6. Cetak Mutasi");
+			System.out.println("7. Simulasi Akhir Bulan (khusus tabungan)");
 			System.out.println("0. Keluar");
 			System.out.print("Pilih menu: ");
 			
@@ -36,32 +37,67 @@ public class Main{
 					String nama = input.nextLine();
 					System.out.print("Masukkan Saldo Awal: ");
 					double saldo = bacaDouble(input, "");
+					
+					if(saldo < 50000) {
+						System.out.println("Gagal: Saldo awal minimal Rp.50000!");
+						break;
+					};
+					
 					System.out.println("Masukkkan PIN: ");
 					String pin = input.nextLine();
+					System.out.println("Pilih Produk : \n 1. Tabungan Umum \n 2. Giro Bisnis");
+					System.out.println("Pilihan : ");
+					int produk = input.nextInt();
+					input.nextLine();
 					
-					Rekening rekeningBaru = new Rekening(no, nama, saldo, pin);
-					daftarRekening.add(rekeningBaru);
-					akunAktif = rekeningBaru;
+					
+
+					
+					
+					Rekening rekeningbaru = null;
+					
+					if(produk == 1) {
+						System.out.println("Suku Bunga (%) :");
+						double sukuBunga = input.nextDouble();
+						input.nextLine();
+						rekeningbaru = new RekeningTabungan(no, nama, saldo, pin, sukuBunga);
+					}else if(produk == 2) {
+						System.out.println("Batas Overdraft :");
+						double batas = input.nextDouble();
+						input.nextLine();
+						rekeningbaru = new RekeningGiro(no, nama, saldo, pin, batas);
+					}else {
+						System.out.println("Pilihan produk tidak valid!");
+						break;
+					}
+					
+					daftarRekening.add(rekeningbaru);
+					System.out.println("Rekening berhasil dibuat!");
+					
+					
+					daftarRekening.add(rekeningbaru);
+					akunAktif = rekeningbaru;
 					break;
 					
 				case 2:
 					if(akunAktif == null) {
 						System.out.println("Error: Mohon maaf, Anda belum memiliki nomor rekening!");
 					}else {
-						System.out.println("Masukkan nominal setor: ");
 						double setor = bacaDouble(input, "Masukkan nominal: ");
 						akunAktif.setorTunai(setor);
 					}
 					break;
 					
 				case 3:
+					if(akunAktif == null) {
+						System.out.println("Eror: Mohon maaf, Anda belum memiliki nomor rekening!");
+					}
+					
 					if(akunAktif.isBlocked()) {
 						System.out.println("Akses ditolak: akun anda sedang terblokir!");
 						break;
 					}
-					if(akunAktif == null) {
-						System.out.println("Eror: Mohon maaf, Anda belum memiliki nomor rekening!");
-					}else {
+					else {
 						System.out.println("Masukkan PIN: ");
 						String pinInput = input.nextLine();
 						if(akunAktif.otentikasi(pinInput)) {
@@ -121,6 +157,15 @@ public class Main{
 						}
 						
 						
+					}
+					break;
+					
+				case 7:
+					if(akunAktif instanceof RekeningTabungan) {
+						RekeningTabungan tab = (RekeningTabungan) akunAktif;
+						tab.tambahBungaAkhirBulan();
+					}else {
+						System.out.println("Gagal: Fitur bunga akhir bulan hanya berlaku untuk Rekening Tabungan");
 					}
 					break;
 					
