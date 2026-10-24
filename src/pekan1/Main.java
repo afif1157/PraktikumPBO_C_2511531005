@@ -22,6 +22,7 @@ public class Main{
 			System.out.println("5. Ganti Akun");
 			System.out.println("6. Cetak Mutasi");
 			System.out.println("7. Simulasi Akhir Bulan (khusus tabungan)");
+			System.out.println("8. Transfer ke rekening lain");
 			System.out.println("0. Keluar");
 			System.out.print("Pilih menu: ");
 			
@@ -43,16 +44,12 @@ public class Main{
 						break;
 					};
 					
-					System.out.println("Masukkkan PIN: ");
+					System.out.println("Masukkkan PIN: ");	
 					String pin = input.nextLine();
 					System.out.println("Pilih Produk : \n 1. Tabungan Umum \n 2. Giro Bisnis");
 					System.out.println("Pilihan : ");
 					int produk = input.nextInt();
 					input.nextLine();
-					
-					
-
-					
 					
 					Rekening rekeningbaru = null;
 					
@@ -101,7 +98,6 @@ public class Main{
 						System.out.println("Masukkan PIN: ");
 						String pinInput = input.nextLine();
 						if(akunAktif.otentikasi(pinInput)) {
-							System.out.println("Masukkan nominal tarik: ");
 							double tarik = bacaDouble(input, "Masukkan nominal: ");
 							akunAktif.tarikTunai(tarik);
 						}else {
@@ -166,6 +162,36 @@ public class Main{
 						tab.tambahBungaAkhirBulan();
 					}else {
 						System.out.println("Gagal: Fitur bunga akhir bulan hanya berlaku untuk Rekening Tabungan");
+					}
+					break;
+					
+				case 8:
+					if(akunAktif == null) {
+						System.out.println("Error: Anda belum membukan rekening!");
+					}
+					else {
+						System.out.println("Masukkan nomor rekening tujuan : ");
+						String rt = input.nextLine();
+						Rekening ditemukan = null;
+						for(Rekening r : daftarRekening) {
+							if(r.getNomorRekening().equals(rt)) {
+								ditemukan = r;
+								break;
+							}
+						}
+						
+						if(ditemukan != null) {
+							System.out.println("Masukkan nominal transfer : ");
+							double nominal = input.nextDouble();
+							input.nextLine();
+							System.out.println("masukkan PIN : ");
+							String pinInput = input.nextLine();
+							if(akunAktif.otentikasi(pinInput) == true) {
+								akunAktif.Transfer(ditemukan, nominal, pinInput);
+								}
+							}else {
+							System.out.println("Error: Rekening tidak ditemukan!");
+						}
 					}
 					break;
 					

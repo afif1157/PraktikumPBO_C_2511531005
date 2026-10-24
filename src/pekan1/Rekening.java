@@ -90,13 +90,14 @@ public class Rekening {
 		}
 	}
 	
-	public void tarikTunai(double nominal) {
-		
+	public boolean tarikTunai(double nominal) {
 		if(nominal < 10000) {
 			System.out.println("Gagal: minimal nominal penarikan Rp.10.000,00");
+			return false;
 		}
 		else if(nominal > (saldo-10000)) {
 			System.out.println("Gagal:saldo anda " + formatRupiah.format(saldo)+ " minimal sisa saldo Rp.10.000,00");
+			return false;
 		}
 		else if(nominal >= 10000) {   
 			saldo -= nominal;
@@ -105,11 +106,27 @@ public class Rekening {
 			riwayatTransaksi.add(trxBaru);
 			
 			System.out.println("Tarik tunai " + formatRupiah.format(nominal) + " berhasil. Saldo saat ini: " + formatRupiah.format(saldo) );
+			return true;
 		}
 		else {
 			System.out.println("Gagal: Saldo tidak mencukupi!");
+			return false;
 		}
 	}
+	
+	public void Transfer(Rekening Tujuan, double nominal, String pinInput) {
+		if(otentikasi(pinInput) == false) {
+			System.out.println("PIN yang anda masukkan salah!");
+			return;
+		}
+		boolean berhasiTarik = this.tarikTunai(nominal);
+		if(berhasiTarik) {
+			Tujuan.setorTunai(nominal);
+			System.out.println("Transfer Rp" + nominal + " berhasil!");
+		}else {
+			System.out.println("Transfer gagal!");
+		}
+	} 
 	
 	public void cekInformasi() { 
 		System.out.println("--- INFO REKENING ---");
